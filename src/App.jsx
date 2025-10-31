@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 
-// ---------- Sample articles data ----------
 const INITIAL_ARTICLES = [
   {
     id: 1,
@@ -41,7 +40,6 @@ function escapeRegExp(s) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-// Build a case-insensitive regex that matches any space-separated token
 function buildQueryRegex(raw) {
   const q = (raw || "").trim();
   if (!q) return null;
@@ -64,12 +62,10 @@ export default function App() {
   });
   const [showOnlyStarred, setShowOnlyStarred] = useState(false);
 
-  // persist starred set
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify([...starred]));
   }, [starred]);
 
-  // toggle star
   const toggleStar = (id) => {
     setStarred((prev) => {
       const next = new Set(prev);
@@ -81,36 +77,31 @@ export default function App() {
 
   const regex = useMemo(() => buildQueryRegex(searchTerm), [searchTerm]);
 
-  // filter by query and (optionally) starred-only, then sort starred on top
   const filteredAndSorted = useMemo(() => {
     let list = INITIAL_ARTICLES;
 
-    // filter by search
     if (regex) {
       list = list.filter((a) => regex.test(a.title) || regex.test(a.content));
     }
 
-    // filter by starred-only
     if (showOnlyStarred) {
       list = list.filter((a) => starred.has(a.id));
     }
 
-    // sort: starred first; keep original order otherwise
     const withIndex = list.map((a, idx) => ({ a, idx }));
     withIndex.sort((l, r) => {
       const s1 = starred.has(l.a.id) ? 1 : 0;
       const s2 = starred.has(r.a.id) ? 1 : 0;
-      if (s1 !== s2) return s2 - s1; // starred desc
-      return l.idx - r.idx; // stable
+      if (s1 !== s2) return s2 - s1; 
+      return l.idx - r.idx; 
     });
 
     return withIndex.map((x) => x.a);
   }, [regex, showOnlyStarred, starred]);
 
-  // Highlight helper (keeps original casing)
   const highlightText = (text, rx) => {
     if (!rx || !text) return text;
-    const parts = String(text).split(rx); // capture group stays in array
+    const parts = String(text).split(rx); 
     return parts.map((part, i) =>
       rx.test(part) ? (
         <mark key={i} className="bg-yellow-200 px-1 rounded">
@@ -122,11 +113,9 @@ export default function App() {
     );
   };
 
-  // UI
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Text Search Application
@@ -136,9 +125,7 @@ export default function App() {
           </p>
         </div>
 
-        {/* Controls Row */}
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          {/* Search Input */}
           <div className="relative flex-1">
             <input
               type="text"
@@ -148,7 +135,7 @@ export default function App() {
               className="w-full px-6 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white"
             />
             <div className="absolute right-3 top-3">
-              {/* Search icon → always black */}
+             
               <svg
                 className="w-5 h-5 text-black"
                 fill="none"
@@ -165,7 +152,6 @@ export default function App() {
             </div>
           </div>
 
-          {/* Filter: All / Starred */}
           <div className="flex items-center gap-2">
             <button
               type="button"
@@ -195,7 +181,6 @@ export default function App() {
           </div>
         </div>
 
-        {/* Results Count */}
         <div className="mb-6">
           <p className="text-gray-700">
             {filteredAndSorted.length} article
@@ -205,7 +190,6 @@ export default function App() {
           </p>
         </div>
 
-        {/* Articles List */}
         <div className="space-y-6">
           {filteredAndSorted.map((article) => {
             const isStarred = starred.has(article.id);
@@ -221,8 +205,7 @@ export default function App() {
                     {highlightText(article.title, regex)}
                   </h2>
 
-                  {/* Star toggle (icon always black; filled when starred) */}
-                 {/* Star toggle (outlined when off, filled when on) */}
+                
                  <button
   type="button"
   onClick={(e) => {
@@ -254,7 +237,6 @@ export default function App() {
                   {highlightText(article.content, regex)}
                 </p>
 
-                {/* Expanded content */}
                 {isOpen && (
                   <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
                     <h3 className="font-semibold text-gray-900 mb-2">
@@ -268,11 +250,9 @@ export default function App() {
           })}
         </div>
 
-        {/* No results message */}
         {filteredAndSorted.length === 0 && (
           <div className="text-center py-12">
             <div className="text-gray-900 mb-4">
-              {/* Empty-state icon → black */}
               <svg
                 className="w-16 h-16 mx-auto text-black"
                 fill="none"
