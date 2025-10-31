@@ -108,16 +108,6 @@ src/
 
 ---
 
-## 📌 Future Enhancements (nice to have)
-
-- Category filters
-- Multi-highlight color themes
-- API Fetch mode & offline mode
-- Dark mode toggle
-- Animations
-
----
-
 ## 👨‍💻 Author
 
 **Rawad Kadi**  
